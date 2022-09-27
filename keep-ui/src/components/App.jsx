@@ -2,7 +2,6 @@ import React, { useState ,useEffect} from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
-import CreateArea from "./CreateArea";
 
 function App() {
   const [notes, setNotes] = useState([{
@@ -10,6 +9,8 @@ function App() {
   content: ""
   }]);
 
+
+  // Get Method
   useEffect(() => {
     fetch("http://localhost:9000/notes")
     .then(res => res.json()
@@ -22,6 +23,7 @@ function App() {
     );
   },[]);
 
+  //Post method
   const addNotes = async(newNote) => {
     await fetch("http://localhost:9000/notes", {
     method: "POST",
@@ -41,6 +43,24 @@ function App() {
       console.log(err.message);
     });
   };
+
+  // Delete method
+
+  const deleteNote = async(id) => {
+    await fetch("http://localhost:9000/notes/{id}", {
+      method: "DELETE",
+    }).then(response => {
+      if (response.status === 200) {
+        setNotes(notes.filter((note) =>{
+          return note._id !== id;
+        })
+        )
+      } else {
+         return;
+      }
+      });
+  };
+    
 
   const [newNote, setNewNote] = useState({
     title: "",
@@ -99,8 +119,11 @@ function App() {
       {notes.map((noteItem, index) => {
         return (
           <Note
+            key={noteItem._id}
+            id={noteItem._id}
             title={noteItem.title}
             content={noteItem.content}
+            onDelete={deleteNote}
           />
         );
       })}
