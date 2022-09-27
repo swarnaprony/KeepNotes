@@ -46,8 +46,11 @@ function App() {
 
   // Delete method
 
+
+
   const deleteNote = async(id) => {
-    await fetch("http://localhost:9000/notes/{id}", {
+    await fetch(
+      `http://localhost:9000/notes/${id}`, {
       method: "DELETE",
     }).then(response => {
       if (response.status === 200) {
